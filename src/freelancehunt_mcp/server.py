@@ -226,6 +226,7 @@ HANDLERS_MAP = {
 
     "get_freelancer": handle_get_freelancer,
     "get_skills": handle_get_skills,
+    "get_locations": handle_get_locations,
     "get_threads": handle_get_threads,
     "get_project_bids": handle_get_project_bids,
     "get_project_comments": handle_get_project_comments,
