@@ -18,7 +18,6 @@ from .handlers import (
     handle_get_project,
     handle_get_project_bids,
     handle_get_project_comments,
-    handle_search_freelancers,
     handle_get_freelancer,
     handle_get_my_profile,
     handle_get_my_bids,
@@ -28,8 +27,8 @@ from .handlers import (
     handle_get_contest,
     handle_get_threads,
     handle_get_skills,
-    handle_get_locations,
-    handle_get_countries
+    handle_get_countries,
+    handle_get_cities
 )
 
 # ================================================
@@ -87,19 +86,7 @@ TOOLS_CONFIG = [
             "required": ["project_id"]
         }
     },
-    {
-        "name": "search_freelancers",
-        "description": "Search for freelancers on FreelanceHunt",
-        "schema": {
-            "type": "object",
-            "properties": {
-                "page": {"type": "integer", "description": "Page number (default: 1)", "minimum": 1},
-                "per_page": {"type": "integer", "description": "Items per page (default: 20, max: 50)", "minimum": 1, "maximum": 50},
-                "skill_ids": {"type": "array", "items": {"type": "integer"}, "description": "List of skill IDs to filter by"},
-                "location_id": {"type": "integer", "description": "Filter by location ID"}
-            }
-        }
-    },
+
     {
         "name": "get_freelancer",
         "description": "Get detailed information about a specific freelancer",
@@ -112,11 +99,6 @@ TOOLS_CONFIG = [
     {
         "name": "get_skills",
         "description": "Get list of available skills on FreelanceHunt",
-        "schema": {"type": "object", "properties": {}}
-    },
-    {
-        "name": "get_locations",
-        "description": "Get list of available locations on FreelanceHunt",
         "schema": {"type": "object", "properties": {}}
     },
     {
@@ -223,6 +205,17 @@ TOOLS_CONFIG = [
         "name": "get_countries",
         "description": "Get list of available countries on FreelanceHunt",
         "schema": {"type": "object", "properties": {}}
+    },
+    {
+        "name": "get_cities",
+        "description": "Get list of cities for a specific country on FreelanceHunt",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "country_id": {"type": "integer", "description": "Country ID", "minimum": 1}
+            },
+            "required": ["country_id"]
+        }
     }
 ]
 
@@ -230,10 +223,9 @@ TOOLS_CONFIG = [
 HANDLERS_MAP = {
     "search_projects": handle_search_projects,
     "get_project": handle_get_project,
-    "search_freelancers": handle_search_freelancers,
+
     "get_freelancer": handle_get_freelancer,
     "get_skills": handle_get_skills,
-    "get_locations": handle_get_locations,
     "get_threads": handle_get_threads,
     "get_project_bids": handle_get_project_bids,
     "get_project_comments": handle_get_project_comments,
@@ -243,7 +235,8 @@ HANDLERS_MAP = {
     "get_freelancer_reviews": handle_get_freelancer_reviews,
     "search_contests": handle_search_contests,
     "get_contest": handle_get_contest,
-    "get_countries": handle_get_countries
+    "get_countries": handle_get_countries,
+    "get_cities": handle_get_cities
 }
 
 

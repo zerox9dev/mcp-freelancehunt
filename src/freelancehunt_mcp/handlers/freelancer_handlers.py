@@ -9,22 +9,6 @@ from ..api_client import FreelanceHuntClient
 from .base import create_json_response, create_error_response
 
 
-async def handle_search_freelancers(client: FreelanceHuntClient, arguments: Dict[str, Any]) -> List[types.TextContent]:
-    page = arguments.get("page", 1)
-    per_page = arguments.get("per_page", 20)
-    skill_ids = arguments.get("skill_ids")
-    location_id = arguments.get("location_id")
-    
-    freelancers = await client.search_freelancers(
-        page=page,
-        per_page=per_page,
-        skill_ids=skill_ids,
-        location_id=location_id
-    )
-    
-    result = [freelancer.model_dump() for freelancer in freelancers]
-    return create_json_response(result)
-
 
 async def handle_get_freelancer(client: FreelanceHuntClient, arguments: Dict[str, Any]) -> List[types.TextContent]:
     freelancer_id = arguments.get("freelancer_id")

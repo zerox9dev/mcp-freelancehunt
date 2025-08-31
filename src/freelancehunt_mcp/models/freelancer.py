@@ -32,7 +32,7 @@ class FreelancerAttributes(BaseModel):
     completed_contests: int = 0
     success_rate: Optional[float] = None
     average_grade: Optional[float] = None
-    view_count: int = 0
+    view_count: Optional[int] = None
     created_at: Optional[str] = None
     visited_at: Optional[str] = None
     status: Optional[Dict[str, Any]] = None

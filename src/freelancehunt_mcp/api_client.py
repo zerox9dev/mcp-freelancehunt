@@ -129,31 +129,7 @@ class FreelanceHuntClient:
         except ValidationError as e:
             raise FreelanceHuntAPIError(f"Invalid project data: {e}")
     
-    async def search_freelancers(
-        self,
-        page: int = 1,
-        per_page: int = 20,
-        skill_ids: Optional[List[int]] = None,
-        location_id: Optional[int] = None
-    ) -> List[FreelancerProfile]:
-        params = {
-            'page[number]': page,
-            'page[size]': min(per_page, 50)
-        }
-        
-        if skill_ids:
-            params['skill_id'] = skill_ids
-        if location_id:
-            params['location_id'] = location_id
-        
-        try:
-            response_data = await self._make_request('GET', '/freelancers', params=params)
-            # Extract freelancers list from response
-            freelancers_data = response_data.get('data', [])
-            return [FreelancerProfile(**freelancer) for freelancer in freelancers_data]
-        except ValidationError as e:
-            raise FreelanceHuntAPIError(f"Invalid freelancer data: {e}")
-    
+
     async def get_freelancer(self, freelancer_id: int) -> FreelancerProfile:
         try:
             response_data = await self._make_request('GET', f'/freelancers/{freelancer_id}')
@@ -171,11 +147,20 @@ class FreelanceHuntClient:
             raise FreelanceHuntAPIError(f"Failed to get skills: {e}")
     
     async def get_locations(self) -> List[Dict[str, Any]]:
+        """Получить страны (локации верхнего уровня)"""
         try:
-            response_data = await self._make_request('GET', '/locations')
+            response_data = await self._make_request('GET', '/countries')
             return response_data.get('data', [])
         except Exception as e:
             raise FreelanceHuntAPIError(f"Failed to get locations: {e}")
+    
+    async def get_cities(self, country_id: int) -> List[Dict[str, Any]]:
+        """Получить города для конкретной страны"""
+        try:
+            response_data = await self._make_request('GET', f'/cities/{country_id}')
+            return response_data.get('data', [])
+        except Exception as e:
+            raise FreelanceHuntAPIError(f"Failed to get cities for country {country_id}: {e}")
     
     async def get_threads(
         self,
