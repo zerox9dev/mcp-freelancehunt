@@ -14,7 +14,14 @@ from .models import (
     FreelancerProfile,
     SearchFilters,
     Thread,
-    ThreadsListResponse
+    ThreadsListResponse,
+    ProjectCommentsResponse,
+    BidsResponse,
+    Contest,
+    ContestsResponse,
+    CountriesResponse,
+    PortfolioResponse,
+    UserProfile
 )
 
 
@@ -187,3 +194,147 @@ class FreelanceHuntClient:
             raise FreelanceHuntAPIError(f"Invalid threads response format: {e}")
         except Exception as e:
             raise FreelanceHuntAPIError(f"Failed to get threads: {e}")
+
+    # ================================================
+    # Дополнительные методы API
+    # ================================================
+    
+    async def get_project_bids(
+        self, 
+        project_id: int,
+        page: int = 1,
+        per_page: int = 20
+    ) -> BidsResponse:
+        """Получить биды проекта"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        try:
+            response_data = await self._make_request('GET', f'/projects/{project_id}/bids', params=params)
+            return BidsResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid bids data: {e}")
+
+    async def get_project_comments(
+        self, 
+        project_id: int,
+        page: int = 1,
+        per_page: int = 20
+    ) -> ProjectCommentsResponse:
+        """Получить комментарии проекта"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        try:
+            response_data = await self._make_request('GET', f'/projects/{project_id}/comments', params=params)
+            return ProjectCommentsResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid comments data: {e}")
+
+    async def get_my_bids(
+        self,
+        page: int = 1,
+        per_page: int = 20
+    ) -> BidsResponse:
+        """Получить мои биды"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        try:
+            response_data = await self._make_request('GET', '/my/bids', params=params)
+            return BidsResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid my bids data: {e}")
+
+    async def get_my_profile(self) -> UserProfile:
+        """Получить мой профиль"""
+        try:
+            response_data = await self._make_request('GET', '/my/profile')
+            profile_data = response_data.get('data')
+            if not profile_data:
+                raise FreelanceHuntAPIError("No profile data in response")
+            return UserProfile(**profile_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid profile data: {e}")
+
+    async def get_freelancer_portfolio(
+        self,
+        freelancer_id: int,
+        page: int = 1,
+        per_page: int = 20
+    ) -> PortfolioResponse:
+        """Получить портфолио фрилансера"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        try:
+            response_data = await self._make_request('GET', f'/freelancers/{freelancer_id}/portfolio', params=params)
+            return PortfolioResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid portfolio data: {e}")
+
+    async def get_freelancer_reviews(
+        self,
+        freelancer_id: int,
+        page: int = 1,
+        per_page: int = 20
+    ) -> List[Dict[str, Any]]:
+        """Получить отзывы о фрилансере"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        try:
+            response_data = await self._make_request('GET', f'/freelancers/{freelancer_id}/reviews', params=params)
+            return response_data.get('data', [])
+        except Exception as e:
+            raise FreelanceHuntAPIError(f"Failed to get freelancer reviews: {e}")
+
+    async def search_contests(
+        self,
+        page: int = 1,
+        per_page: int = 20,
+        skill_ids: Optional[List[int]] = None
+    ) -> ContestsResponse:
+        """Поиск конкурсов"""
+        params = {
+            'page[number]': page,
+            'page[size]': min(per_page, 50)
+        }
+        
+        if skill_ids:
+            params['filter[skill_id]'] = ','.join(map(str, skill_ids))
+        
+        try:
+            response_data = await self._make_request('GET', '/contests', params=params)
+            return ContestsResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid contests data: {e}")
+
+    async def get_contest(self, contest_id: int) -> Contest:
+        """Получить детали конкурса"""
+        try:
+            response_data = await self._make_request('GET', f'/contests/{contest_id}')
+            contest_data = response_data.get('data')
+            if not contest_data:
+                raise FreelanceHuntAPIError("No contest data in response")
+            return Contest(**contest_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid contest data: {e}")
+
+    async def get_countries(self) -> CountriesResponse:
+        """Получить список стран"""
+        try:
+            response_data = await self._make_request('GET', '/countries')
+            return CountriesResponse(**response_data)
+        except ValidationError as e:
+            raise FreelanceHuntAPIError(f"Invalid countries data: {e}")
