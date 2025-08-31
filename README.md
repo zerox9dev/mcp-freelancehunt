@@ -1,6 +1,6 @@
 # FreelanceHunt MCP Server
 
-MCP сервер для FreelanceHunt API v2. **16 tools, 100% работают.*
+MCP сервер для FreelanceHunt API v2. **15 tools, 100% работают.**
 
 ## Установка
 

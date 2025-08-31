@@ -27,6 +27,7 @@ from .handlers import (
     handle_get_contest,
     handle_get_threads,
     handle_get_skills,
+
     handle_get_countries,
     handle_get_cities
 )
@@ -101,6 +102,7 @@ TOOLS_CONFIG = [
         "description": "Get list of available skills on FreelanceHunt",
         "schema": {"type": "object", "properties": {}}
     },
+
     {
         "name": "get_threads",
         "description": "Get list of threads (conversations) on FreelanceHunt",
@@ -226,7 +228,7 @@ HANDLERS_MAP = {
 
     "get_freelancer": handle_get_freelancer,
     "get_skills": handle_get_skills,
-    "get_locations": handle_get_locations,
+
     "get_threads": handle_get_threads,
     "get_project_bids": handle_get_project_bids,
     "get_project_comments": handle_get_project_comments,
