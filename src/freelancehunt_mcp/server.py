@@ -18,6 +18,7 @@ from .handlers import (
     handle_get_project,
     handle_get_project_bids,
     handle_get_project_comments,
+    handle_create_bid,
     handle_get_freelancer,
     handle_get_my_profile,
     handle_get_my_bids,
@@ -27,7 +28,6 @@ from .handlers import (
     handle_get_contest,
     handle_get_threads,
     handle_get_skills,
-
     handle_get_countries,
     handle_get_cities
 )
@@ -85,6 +85,34 @@ TOOLS_CONFIG = [
             "type": "object",
             "properties": {"project_id": {"type": "integer", "description": "Project ID", "minimum": 1}},
             "required": ["project_id"]
+        }
+    },
+    {
+        "name": "create_bid",
+        "description": "Create a bid on a project",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "integer", "description": "Project ID", "minimum": 1},
+                "days": {"type": "integer", "description": "Project duration in days", "minimum": 1},
+                "budget": {
+                    "type": "object",
+                    "description": "Budget object with amount and currency",
+                    "properties": {
+                        "amount": {"type": "number", "description": "Budget amount", "minimum": 0},
+                        "currency": {"type": "string", "description": "Currency code (UAH, USD, EUR)"}
+                    },
+                    "required": ["amount", "currency"]
+                },
+                "comment": {"type": "string", "description": "Bid comment without HTML support"},
+                "safe_type": {
+                    "type": "string", 
+                    "description": "Payment type: null (direct), employer (safe, fee by employer), developer (safe, fee by freelancer), split (safe, fee split), employer_cashless (business safe)",
+                    "enum": ["employer", "developer", "split", "employer_cashless"]
+                },
+                "is_hidden": {"type": "boolean", "description": "Hide bid (Profile Plus only)", "default": False}
+            },
+            "required": ["project_id", "days", "budget", "comment"]
         }
     },
 
@@ -227,6 +255,7 @@ TOOLS_CONFIG = [
 HANDLERS_MAP = {
     "search_projects": handle_search_projects,
     "get_project": handle_get_project,
+    "create_bid": handle_create_bid,
 
     "get_freelancer": handle_get_freelancer,
     "get_skills": handle_get_skills,

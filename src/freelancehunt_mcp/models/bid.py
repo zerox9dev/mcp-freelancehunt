@@ -38,4 +38,13 @@ class Bid(BaseModel):
 class BidsResponse(BaseModel):
     data: List[Bid]
     links: Dict[str, str] = {}
+
+
+class CreateBidRequest(BaseModel):
+    """Модель для создания ставки"""
+    days: int
+    budget: ProjectBudget
+    safe_type: Optional[str] = None  # null, employer, developer, split, employer_cashless
+    comment: str
+    is_hidden: Optional[bool] = False
     meta: Optional[Dict[str, Any]] = {}

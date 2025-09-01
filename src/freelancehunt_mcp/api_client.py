@@ -17,6 +17,7 @@ from .models import (
     ThreadsListResponse,
     ProjectCommentsResponse,
     BidsResponse,
+    CreateBidRequest,
     Contest,
     ContestsResponse,
     CountriesResponse,
@@ -53,7 +54,8 @@ class FreelanceHuntClient:
         method: str, 
         endpoint: str, 
         params: Optional[Dict[str, Any]] = None,
-        data: Optional[Dict[str, Any]] = None
+        data: Optional[Dict[str, Any]] = None,
+        json_data: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         # Simple rate limiting
         current_time = asyncio.get_event_loop().time()
@@ -69,7 +71,7 @@ class FreelanceHuntClient:
                     url=url,
                     headers=self.headers,
                     params=params,
-                    json=data,
+                    json=json_data or data,
                     timeout=30.0
                 )
                 
@@ -210,6 +212,22 @@ class FreelanceHuntClient:
             return BidsResponse(**response_data)
         except ValidationError as e:
             raise FreelanceHuntAPIError(f"Invalid bids data: {e}")
+
+    async def create_bid(
+        self,
+        project_id: int,
+        bid_data: CreateBidRequest
+    ) -> Dict[str, Any]:
+        """Создать ставку на проект"""
+        try:
+            response_data = await self._make_request(
+                'POST', 
+                f'/projects/{project_id}/bids',
+                json_data=bid_data.model_dump()
+            )
+            return response_data
+        except Exception as e:
+            raise FreelanceHuntAPIError(f"Failed to create bid: {e}")
 
     async def get_project_comments(
         self, 
