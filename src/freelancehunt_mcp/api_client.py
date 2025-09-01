@@ -188,13 +188,22 @@ class FreelanceHuntClient:
         self, 
         project_id: int,
         page: int = 1,
-        per_page: int = 20
+        per_page: int = 20,
+        is_winner: Optional[int] = None,
+        status: Optional[str] = None
     ) -> BidsResponse:
         """Получить биды проекта"""
         params = {
             'page[number]': page,
-            'page[size]': min(per_page, 50)
+            'page[size]': min(per_page, 50),
+            'include': 'freelancer,project'  # Включить связанные данные
         }
+        
+        # Добавить фильтры если указаны
+        if is_winner is not None:
+            params['is_winner'] = is_winner
+        if status:
+            params['status'] = status
         
         try:
             response_data = await self._make_request('GET', f'/projects/{project_id}/bids', params=params)

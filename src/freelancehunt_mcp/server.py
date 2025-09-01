@@ -122,7 +122,9 @@ TOOLS_CONFIG = [
             "properties": {
                 "project_id": {"type": "integer", "description": "Project ID", "minimum": 1},
                 "page": {"type": "integer", "description": "Page number (default: 1)", "minimum": 1},
-                "per_page": {"type": "integer", "description": "Items per page (default: 20, max: 50)", "minimum": 1, "maximum": 50}
+                "per_page": {"type": "integer", "description": "Items per page (default: 20, max: 50)", "minimum": 1, "maximum": 50},
+                "is_winner": {"type": "integer", "description": "Show only winner bid (1) or non-winner (0)"},
+                "status": {"type": "string", "description": "Filter by status: active, revoked, rejected"}
             },
             "required": ["project_id"]
         }

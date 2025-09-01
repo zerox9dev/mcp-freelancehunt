@@ -15,9 +15,7 @@ class BidStatus(BaseModel):
     winner: str = "winner"
 
 
-class Bid(BaseModel):
-    id: int
-    type: str = "bid"
+class BidAttributes(BaseModel):
     days: Optional[int] = None
     safe_type: Optional[str] = None
     budget: Optional[ProjectBudget] = None
@@ -27,8 +25,14 @@ class Bid(BaseModel):
     is_winner: bool = False
     freelancer: Optional[Dict[str, Any]] = None
     project: Optional[Dict[str, Any]] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    attachment: Optional[str] = None
+    published_at: Optional[str] = None  # Изменено на str, так как API возвращает строку
+
+
+class Bid(BaseModel):
+    id: int
+    type: str = "bid" 
+    attributes: Optional[BidAttributes] = None
 
 
 class BidsResponse(BaseModel):

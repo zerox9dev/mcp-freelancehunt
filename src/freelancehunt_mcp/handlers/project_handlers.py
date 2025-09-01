@@ -51,6 +51,8 @@ async def handle_get_project_bids(client: FreelanceHuntClient, arguments: Dict[s
     project_id = arguments.get("project_id")
     page = arguments.get("page", 1)
     per_page = arguments.get("per_page", 20)
+    is_winner = arguments.get("is_winner")
+    status = arguments.get("status")
     
     if not project_id:
         return create_error_response("project_id is required")
@@ -58,7 +60,9 @@ async def handle_get_project_bids(client: FreelanceHuntClient, arguments: Dict[s
     response = await client.get_project_bids(
         project_id=project_id,
         page=page,
-        per_page=per_page
+        per_page=per_page,
+        is_winner=is_winner,
+        status=status
     )
     
     result = {
